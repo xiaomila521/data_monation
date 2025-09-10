@@ -1,4 +1,5 @@
 const { createProxyMiddleware } = require('http-proxy-middleware')
+const { cookie } = require('./MT/cookie')
 
 module.exports = (req, res) => {
   const { target, path } = req.query
@@ -10,7 +11,7 @@ module.exports = (req, res) => {
     case 'mt':
       targetUrl = 'https://e.waimai.meituan.com'
       headers = {
-        cookie: '你的美团cookie',
+        cookie: cookie,
         origin: 'https://e.waimai.meituan.com',
         referer: 'https://e.waimai.meituan.com/',
       }
