@@ -1,0 +1,21 @@
+{
+  "functions": {
+    "api/proxy.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/mt/(.*)",
+      "destination": "/api/proxy?target=mt&path=$1"
+    },
+    {
+      "source": "/ele/(.*)",
+      "destination": "/api/proxy?target=ele&path=$1"
+    },
+    {
+      "source": "/elealsc/(.*)",
+      "destination": "/api/proxy?target=elealsc&path=$1"
+    }
+  ]
+}
