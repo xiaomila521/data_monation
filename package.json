@@ -41,6 +41,7 @@
     "oxlint": "~1.8.0",
     "prettier": "3.6.2",
     "vite": "npm:rolldown-vite@latest",
+    "vite-plugin-singlefile": "^2.3.0",
     "vite-plugin-vue-devtools": "^8.0.0"
   }
 }
