@@ -1,47 +1,27 @@
-const { createProxyMiddleware } = require('http-proxy-middleware')
-const { cookie } = require('./MT/cookie')
+export const config = { runtime: 'nodejs22.x' }
 
-module.exports = (req, res) => {
-  const { target, path } = req.query
+export default async function handler(req, res) {
+  const segs = req.query.path || []
+  const qs = req.url.includes('?') ? '?' + req.url.split('?')[1] : ''
+  const url = `https://e.waimai.meituan.com/${(Array.isArray(segs) ? segs : []).join('/')}${qs}`
 
-  let targetUrl = ''
-  let headers = {}
-
-  switch (target) {
-    case 'mt':
-      targetUrl = 'https://e.waimai.meituan.com'
-      headers = {
-        cookie: cookie,
-        origin: 'https://e.waimai.meituan.com',
-        referer: 'https://e.waimai.meituan.com/',
-      }
-      break
-    case 'ele':
-      targetUrl = 'https://app-api.shop.ele.me'
-      headers = {
-        origin: 'https://app-api.shop.ele.me',
-        referer: 'https://app-api.shop.ele.me/',
-      }
-      break
-    case 'elealsc':
-      targetUrl = 'https://agw.alsc.taobao.com'
-      headers = {
-        origin: 'https://r.ele.me',
-        referer: 'https://r.ele.me/doujin-isv-manage/index.html',
-      }
-      break
-  }
-
-  const proxy = createProxyMiddleware({
-    target: targetUrl,
-    changeOrigin: true,
-    pathRewrite: { [`^/${target}`]: '' },
-    onProxyReq: (proxyReq) => {
-      Object.entries(headers).forEach(([key, value]) => {
-        proxyReq.setHeader(key, value)
-      })
+  const upstream = await fetch(url, {
+    method: req.method,
+    headers: {
+      cookie: process.env.MT_COOKIE || '', // 在 Vercel 环境变量里配置 MT_COOKIE
+      origin: 'https://e.waimai.meituan.com',
+      referer: 'https://e.waimai.meituan.com/',
+      'user-agent': req.headers['user-agent'] || 'Mozilla/5.0',
+      accept: req.headers['accept'] || '*/*',
     },
+    body: ['GET', 'HEAD'].includes(req.method) ? undefined : req.body,
   })
 
-  proxy(req, res)
+  const h = new Headers(upstream.headers)
+  h.delete('set-cookie') // 不把上游 cookie 回传给浏览器
+
+  res.status(upstream.status)
+  h.forEach((v, k) => res.setHeader(k, v))
+  const buf = Buffer.from(await upstream.arrayBuffer())
+  res.send(buf)
 }
