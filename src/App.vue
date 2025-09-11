@@ -75,7 +75,7 @@ async function getMTAllList() {
 // 遍历店铺获取主账户余额
 async function getBalance(list) {
   for (const [index, item] of list.entries()) {
-    await new Promise((resolve) => setTimeout(resolve, 0))
+    await new Promise((resolve) => setTimeout(resolve, 500))
     try {
       await fetchBalance(item, index)
     } catch (error) {
@@ -159,7 +159,7 @@ async function getEleAllList(params) {
 
 async function getBalanceEle(list) {
   for (const [index, item] of list.entries()) {
-    await new Promise((resolve) => setTimeout(resolve, 0))
+    await new Promise((resolve) => setTimeout(resolve, 500))
     try {
       await fetchBalanceEle(item, index)
     } catch (error) {
