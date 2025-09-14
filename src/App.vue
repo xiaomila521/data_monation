@@ -92,7 +92,7 @@ async function fetchBalance(item, index) {
         ...data.effect,
         clickRate: data.effect.clickRate + '%',
       }
-      allList.value[index] = { ...allList.value[index], ...data }
+      allList.value[index] = { ...allList.value[index], ...data, total: data.total / 100 }
       allList.value[index].primaryAccountBalance = data.primaryAccountBalance / 100
     }
   } catch (error) {

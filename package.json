@@ -9,13 +9,15 @@
   "scripts": {
     "dev": "vite --open",
     "proxy": "node proxy-server.js",
-    "start": "concurrently \"node proxy-server.js\" \"npx serve dist -p 3001\"",
     "build": "vite build",
     "preview": "vite preview",
     "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint . --fix",
     "lint": "run-s lint:*",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
+    "electron:build": "npm run build && electron-builder",
+    "start": "npm run electron:dev"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
@@ -33,6 +35,8 @@
     "@prettier/plugin-oxc": "^0.0.4",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/eslint-config-prettier": "^10.2.0",
+    "electron": "38.1.0",
+    "electron-builder": "^26.0.12",
     "eslint": "^9.31.0",
     "eslint-plugin-oxlint": "~1.8.0",
     "eslint-plugin-vue": "~10.3.0",
@@ -41,7 +45,9 @@
     "oxlint": "~1.8.0",
     "prettier": "3.6.2",
     "vite": "npm:rolldown-vite@latest",
+    "vite-plugin-electron": "^0.29.0",
     "vite-plugin-singlefile": "^2.3.0",
-    "vite-plugin-vue-devtools": "^8.0.0"
+    "vite-plugin-vue-devtools": "^8.0.0",
+    "wait-on": "^8.0.4"
   }
 }
